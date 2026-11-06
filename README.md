@@ -225,20 +225,7 @@ The application will be served locally at `http://localhost:3000/`.
 * **Data Visualization**: Recharts (multi-axis line graphs, area charts, forecast cones)
 * **Document Engine**: jsPDF vector generation
 * **Styling**: Tailwind CSS, custom glassmorphism, radar keyframes, and scientific grid patterns
-* **Icons**: Lucide React high-tech iconography
-
----
-
-## 🏆 Presentation Quick Guide for Hackathon Demonstrations
-
-1. **Launch Experience**: Open `http://localhost:3000/`. The visitor lands on the cinematic 3D Earth. Drag the globe to rotate continents and inspect orbit paths.
-2. **Launch Command Center**: Click **"Explore Intelligence"** or **"Launch Dashboard"** to enter the real-time operational dashboard.
-3. **Trigger The WOW Moment**: Click the glowing coral **"JUDGES DEMO SCENARIO"** button in the header.
-4. **Follow the 7 Steps**:
-   - In Step 3, slide the split divider to visually demonstrate baseline vs bloom water.
-   - In Step 4, click **"Run AquaDetect Pipeline"** to show the 7-stage scientific progress indicator.
-   - In Step 6, experience the incident alert trigger with audio-visual pulse.
-   - In Step 7, click **"Download Investigation Dossier"** to export an official PDF evidence report to your computer.
+* **Icons**: Lucide React high-tech iconography 
 
 ---
 
