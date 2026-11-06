@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #06131D;
+    color: #EDF8FA;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* Custom high-tech scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #06131D;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #11354D;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #20D9D0;
+  }
+}
+
+/* Scientific Grid Background Pattern */
+.bg-scientific-grid {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(32, 217, 208, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(32, 217, 208, 0.05) 1px, transparent 1px);
+}
+
+.bg-dot-matrix {
+  background-image: radial-gradient(rgba(49, 155, 255, 0.15) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+/* Glassmorphism Classes */
+.glass-panel {
+  background: rgba(10, 32, 44, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(32, 217, 208, 0.15);
+}
+
+.glass-panel-hover:hover {
+  border-color: rgba(32, 217, 208, 0.35);
+  box-shadow: 0 0 20px -3px rgba(32, 217, 208, 0.15);
+}
+
+.glass-dropdown {
+  background: rgba(8, 27, 39, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(49, 155, 255, 0.2);
+}
+
+/* Radar Scan Animation */
+@keyframes radarSweep {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-radar {
+  animation: radarSweep 6s linear infinite;
+  transform-origin: center center;
+}
+
+/* Scanning line animation */
+@keyframes scanlineBeam {
+  0% { top: 0%; opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+.animate-scanbeam {
+  animation: scanlineBeam 3s ease-in-out infinite;
+}
+
+/* Glowing text utilities */
+.text-glow-aqua {
+  text-shadow: 0 0 12px rgba(32, 217, 208, 0.6);
+}
+
+.text-glow-electric {
+  text-shadow: 0 0 12px rgba(49, 155, 255, 0.6);
+}
+
+/* Leaflet dark theme customizations */
+.leaflet-container {
+  background-color: #06131D !important;
+  font-family: inherit;
+}
+.leaflet-bar a {
+  background-color: #0A202C !important;
+  color: #20D9D0 !important;
+  border-color: #11354D !important;
+}
+.leaflet-bar a:hover {
+  background-color: #143C54 !important;
+  color: #EDF8FA !important;
+}
+.leaflet-popup-content-wrapper {
+  background: #081B27 !important;
+  color: #EDF8FA !important;
+  border: 1px solid #20D9D0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6) !important;
+  border-radius: 8px !important;
+}
+.leaflet-popup-tip {
+  background: #081B27 !important;
+}
