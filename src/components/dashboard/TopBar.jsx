@@ -13,9 +13,10 @@ import {
   ChevronDown,
   User,
   Sliders,
-  ExternalLink
+  ExternalLink,
+  Database
 } from 'lucide-react';
-import { INCIDENT_ALERTS } from '../../data/mockData';
+import { useDatabase } from '../../context/DatabaseContext';
 
 export default function TopBar({ 
   selectedWaterBody, 
@@ -25,6 +26,7 @@ export default function TopBar({
   onBackToLanding,
   onNavigateTab
 }) {
+  const { alerts, connectionStatus, refreshData } = useDatabase();
   const [currentUtcTime, setCurrentUtcTime] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchResults, setShowSearchResults] = useState(false);
@@ -44,12 +46,13 @@ export default function TopBar({
 
   const handleSyncData = () => {
     setIsSyncing(true);
+    refreshData();
     setTimeout(() => {
       setIsSyncing(false);
-    }, 1200);
+    }, 800);
   };
 
-  const filteredWaterBodies = waterBodies.filter(wb => 
+  const filteredWaterBodies = (waterBodies || []).filter(wb => 
     wb.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     wb.region.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -70,9 +73,9 @@ export default function TopBar({
             <span className="font-semibold">SENTINEL-2 MSI</span>
           </div>
           <span className="text-ocean-600">|</span>
-          <div className="flex items-center gap-1 text-emerald-accent">
-            <span className="w-2 h-2 rounded-full bg-emerald-accent animate-ping" />
-            <span>OPERATIONAL (S2A & S2B)</span>
+          <div className="flex items-center gap-1.5 text-emerald-accent">
+            <Database className="w-3 h-3 text-emerald-accent animate-pulse" />
+            <span className="text-[11px] font-semibold">DB: {connectionStatus.isCloud ? "SUPABASE POSTGRES" : "ACTIVE PERSISTENT"}</span>
           </div>
           <span className="text-ocean-600">|</span>
           <span className="text-text-dim text-[11px]">{currentUtcTime || "SYNCING UTC CLOCK..."}</span>
@@ -144,10 +147,10 @@ export default function TopBar({
           <span>RUN DEMO</span>
         </button>
 
-        {/* Sync Satellite Feeds Button */}
+        {/* Sync Database & Satellite Feeds Button */}
         <button
           onClick={handleSyncData}
-          title="Force Telemetry Sync"
+          title="Force Database & Telemetry Sync"
           className="p-2 rounded-lg bg-ocean-900 border border-ocean-700 text-text-secondary hover:text-aqua hover:border-aqua/50 transition-colors"
         >
           <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin text-aqua' : ''}`} />
@@ -161,7 +164,7 @@ export default function TopBar({
           >
             <Bell className="w-4 h-4" />
             <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-coral-alert text-[9px] font-mono font-bold text-white flex items-center justify-center animate-pulse">
-              {INCIDENT_ALERTS.length}
+              {(alerts || []).length}
             </span>
           </button>
 
@@ -169,10 +172,10 @@ export default function TopBar({
             <div className="absolute right-0 top-11 w-80 glass-dropdown rounded-xl shadow-2xl p-3 z-50 border-ocean-700 space-y-2">
               <div className="flex items-center justify-between pb-2 border-b border-ocean-800 text-xs font-mono">
                 <span className="text-white font-bold">ACTIVE INCIDENT ALERTS</span>
-                <span className="text-coral-alert">{INCIDENT_ALERTS.length} PENDING</span>
+                <span className="text-coral-alert">{(alerts || []).length} IN DATABASE</span>
               </div>
               <div className="space-y-1.5 max-h-60 overflow-y-auto">
-                {INCIDENT_ALERTS.map(alert => (
+                {(alerts || []).map(alert => (
                   <div 
                     key={alert.id}
                     onClick={() => {

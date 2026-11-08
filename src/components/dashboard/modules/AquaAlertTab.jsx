@@ -13,51 +13,32 @@ import {
   ExternalLink,
   ChevronRight,
   Send,
-  AlertCircle
+  AlertCircle,
+  Database
 } from 'lucide-react';
-import { INCIDENT_ALERTS, WATER_BODIES } from '../../../data/mockData';
+import { useDatabase } from '../../../context/DatabaseContext';
 
 export default function AquaAlertTab({ onNavigateTab, onSelectWaterBody }) {
-  const [alerts, setAlerts] = useState(INCIDENT_ALERTS);
-  const [selectedAlert, setSelectedAlert] = useState(INCIDENT_ALERTS[0]);
+  const { alerts, updateAlertStatus, addFieldNote } = useDatabase();
+  const [selectedAlertId, setSelectedAlertId] = useState(alerts[0]?.id || 'ALT-2026-8812');
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [newNoteText, setNewNoteText] = useState('');
 
-  const filteredAlerts = alerts.filter(a => {
+  const selectedAlert = alerts.find(a => a.id === selectedAlertId) || alerts[0] || {};
+
+  const filteredAlerts = (alerts || []).filter(a => {
     if (statusFilter === 'ALL') return true;
     return a.status === statusFilter;
   });
 
   const handleUpdateStatus = (newStatus) => {
-    const updated = alerts.map(a => {
-      if (a.id === selectedAlert.id) {
-        return { ...a, status: newStatus };
-      }
-      return a;
-    });
-    setAlerts(updated);
-    setSelectedAlert(prev => ({ ...prev, status: newStatus }));
+    updateAlertStatus(selectedAlert.id, newStatus);
   };
 
   const handleAddNote = (e) => {
     e.preventDefault();
     if (!newNoteText.trim()) return;
-
-    const newNote = {
-      author: "Officer On-Duty (HQ)",
-      date: new Date().toISOString().replace('T', ' ').substring(0, 16),
-      text: newNoteText.trim()
-    };
-
-    const updated = alerts.map(a => {
-      if (a.id === selectedAlert.id) {
-        return { ...a, notes: [...(a.notes || []), newNote] };
-      }
-      return a;
-    });
-
-    setAlerts(updated);
-    setSelectedAlert(prev => ({ ...prev, notes: [...(prev.notes || []), newNote] }));
+    addFieldNote(selectedAlert.id, newNoteText.trim(), "Officer On-Duty (HQ)");
     setNewNoteText('');
   };
 
@@ -72,8 +53,9 @@ export default function AquaAlertTab({ onNavigateTab, onSelectWaterBody }) {
               <ShieldAlert className="w-5 h-5" />
             </span>
             <h2 className="text-2xl font-bold font-display text-white">AquaAlert: Environmental Incident Management</h2>
-            <span className="text-xs font-mono px-2 py-0.5 rounded bg-ocean-800 text-coral-alert border border-ocean-700">
-              Field Triage Dispatch
+            <span className="text-xs font-mono px-2 py-0.5 rounded bg-ocean-800 text-coral-alert border border-ocean-700 flex items-center gap-1">
+              <Database className="w-3 h-3 text-emerald-accent" />
+              <span>Persistent DB Sync</span>
             </span>
           </div>
           <p className="text-xs text-text-secondary mt-1">
@@ -105,7 +87,7 @@ export default function AquaAlertTab({ onNavigateTab, onSelectWaterBody }) {
         {/* Left: Alerts Queue Feed */}
         <div className="lg:col-span-5 space-y-3">
           <div className="flex items-center justify-between text-xs font-mono">
-            <span className="text-white font-semibold">INCIDENT QUEUE ({filteredAlerts.length})</span>
+            <span className="text-white font-semibold">DATABASE INCIDENT QUEUE ({filteredAlerts.length})</span>
             <span className="text-coral-alert font-bold">Priority Triage</span>
           </div>
 
@@ -115,7 +97,7 @@ export default function AquaAlertTab({ onNavigateTab, onSelectWaterBody }) {
               return (
                 <div
                   key={alert.id}
-                  onClick={() => setSelectedAlert(alert)}
+                  onClick={() => setSelectedAlertId(alert.id)}
                   className={`p-4 rounded-xl border transition-all cursor-pointer ${
                     isSelected 
                       ? 'bg-ocean-800/90 border-coral-alert text-white shadow-glow-coral/20' 
@@ -176,7 +158,7 @@ export default function AquaAlertTab({ onNavigateTab, onSelectWaterBody }) {
 
             {/* Change Status Dropdown */}
             <div className="space-y-1">
-              <label className="block text-[10px] font-mono text-text-dim uppercase">INVESTIGATION STATUS</label>
+              <label className="block text-[10px] font-mono text-text-dim uppercase">STATUS (SAVED TO DB)</label>
               <select
                 value={selectedAlert.status}
                 onChange={(e) => handleUpdateStatus(e.target.value)}
@@ -215,7 +197,7 @@ export default function AquaAlertTab({ onNavigateTab, onSelectWaterBody }) {
             </div>
 
             <div className="space-y-1.5">
-              {selectedAlert.recommendedSteps.map((step, idx) => (
+              {(selectedAlert.recommendedSteps || []).map((step, idx) => (
                 <div key={idx} className="p-2.5 rounded-lg bg-navy-950/60 border border-ocean-800 flex items-start gap-2.5 text-xs">
                   <span className="w-5 h-5 rounded bg-ocean-800 text-aqua font-mono text-[10px] flex items-center justify-center flex-shrink-0 mt-0.5">
                     0{idx + 1}
@@ -229,7 +211,7 @@ export default function AquaAlertTab({ onNavigateTab, onSelectWaterBody }) {
           {/* Field Log / Investigation Notes */}
           <div className="space-y-3 pt-2">
             <div className="text-xs font-mono text-white font-semibold flex items-center justify-between">
-              <span>FIELD OBSERVATION LOG</span>
+              <span>FIELD OBSERVATION LOG (PERSISTENT DATABASE)</span>
               <span className="text-text-dim">{selectedAlert.notes?.length || 0} Entries</span>
             </div>
 
@@ -259,7 +241,7 @@ export default function AquaAlertTab({ onNavigateTab, onSelectWaterBody }) {
                 className="px-4 py-2 rounded-lg bg-ocean-800 hover:bg-ocean-700 border border-ocean-600 text-aqua font-mono text-xs font-bold transition-colors flex items-center gap-1.5"
               >
                 <Send className="w-3.5 h-3.5" />
-                <span>LOG</span>
+                <span>SAVE NOTE</span>
               </button>
             </form>
           </div>
